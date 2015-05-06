@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
 
-gem 'rmagick'
-gem 'rake'
-gem 'pry'
+gem 'rmagick', '~> 2.15.0'
+gem 'rake', '~> 10.4.2'
+gem 'pry', '~> 0.10.1'
