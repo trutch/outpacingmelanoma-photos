@@ -7,7 +7,7 @@ Dir.glob(['lib/*.rb']).each { |r| load r}
 
 desc "Scale down Photos"
 task :scale do
-	photo_dir = 'test-photos/full'
+	photo_dir = '2015/full'
 	# FNM_CASEFOLD is to allow for case-insensitive matching
 	photos = Dir.glob("#{photo_dir}/**/*.jpg", File::FNM_CASEFOLD)
 	progressbar = ProgressBar.create(
