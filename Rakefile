@@ -1,9 +1,11 @@
-
 require 'fileutils'
 require 'bundler'
 Bundler.require(:default)
 
+Dotenv.load
+
 Dir.glob(['lib/*.rb']).each { |r| load r}
+Dir.glob('lib/tasks/*.rake').each { |r| import r }  
 
 desc "Scale down Photos"
 task :scale do
