@@ -1,22 +1,28 @@
 module Helpers
+	# Make thumbnail photos
 	def self.make_thumbnail(filename)
 		directory = filename.split("/").first
+		thumbnail_filename = filename.gsub /#{directory}\/full/, "#{directory}/thumbnails"
+		# Set up pathname based on thumnail filename
+		pn = Pathname.new(thumbnail_filename)
+		# Skip creation of thumbnail if it exists
+		return if pn.exist?
 		img = Magick::Image::read(filename).first
 		thumbnail = img.scale(0.09)
-		thumbnail_filename = filename.gsub /#{directory}\/full/, "#{directory}/thumbnails"
-		save_file(thumbnail_filename, thumbnail)
+	  # Save thumbnail to file
+		img.write thumbnail_filename
 	end
+
+	# Scale photos to sane size
 	def self.make_scale(filename)
 		directory = filename.split("/").first
+		scaled_filename = filename.gsub /#{directory}\/full/, "#{directory}/scaled"
+		# Set up pathname based on scaled filename
+		pn = Pathname.new(scaled_filename)
+		# Skip creation of scaled file if it exists
+		return if pn.exist?
 		img = Magick::Image::read(filename).first
 		scaled = img.scale(0.4)
-		scaled_filename = filename.gsub /#{directory}\/full/, "#{directory}/scaled"
-		save_file(scaled_filename, scaled)
-	end
-	def self.save_file(filename, image)
-		# Check if Directory exists and create if it doesn't
-		directory = File.dirname(filename)
-		FileUtils.mkdir_p(directory) unless Dir.exists?(directory) 
-		image.write filename
+		img.write scaled_filename
 	end
 end

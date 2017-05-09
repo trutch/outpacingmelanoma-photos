@@ -9,7 +9,8 @@ Dir.glob('lib/tasks/*.rake').each { |r| import r }
 
 desc "Scale down Photos"
 task :scale do
-	photo_dir = '2015/full'
+	# Only want directory with the full size images
+	photo_dir = "#{ENV['LOCAL_BUCKET']}/full"
 	# FNM_CASEFOLD is to allow for case-insensitive matching
 	photos = Dir.glob("#{photo_dir}/**/*.jpg", File::FNM_CASEFOLD)
 	progressbar = ProgressBar.create(
@@ -21,7 +22,9 @@ task :scale do
 		:remainder_mark => '･')
 	photos.each do |photo|
 		progressbar.log "Current: #{photo}"
+		# Make Thumbnail out of full size photo
 		Helpers.make_thumbnail(photo)
+		# Make Scaled photo out of full size photo
 		Helpers.make_scale(photo)
 	  progressbar.increment
 	end
