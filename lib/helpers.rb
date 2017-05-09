@@ -11,6 +11,8 @@ module Helpers
 		thumbnail = img.scale(0.09)
 	  # Save thumbnail to file
 		img.write thumbnail_filename
+		# Destroy the image to free up memory
+		img.destroy!
 	end
 
 	# Scale photos to sane size
@@ -24,5 +26,7 @@ module Helpers
 		img = Magick::Image::read(filename).first
 		scaled = img.scale(0.4)
 		img.write scaled_filename
+		# Destroy the image to free up memory
+		img.destroy!
 	end
 end
