@@ -25,6 +25,28 @@ namespace :s3 do
 			end
 		end
 	end
+
+	# Sync Local Folder to Remote Bucket
+	task :sync_local_bucket do
+		target_bucket = 'outpacingmelanoma_photos'
+		s3 = Aws::S3::Resource.new(region: 'us-east-1')
+		bucket = s3.bucket(target_bucket)
+  	photos = Dir.glob("#{ENV['LOCAL_BUCKET']}/thumbnails/**/*.jpg", File::FNM_CASEFOLD)
+    # Create progress bar object 
+		progress = Helpers.progress_bar("Sync to S3 Bucket", photos.length)
+		photos.each do |photo|
+		  progress.log "Current: #{photo}"
+  		# Split up filename by slashes
+  		file_elements = photo.split("/")
+			# Set key name
+			key = file_elements[-4..-1].join("/")
+			# Create object variable
+			obj = bucket.object(key)
+			# Upload file 
+			obj.upload_file(photo)
+		  progress.increment
+		end
+	end
 end
 
 

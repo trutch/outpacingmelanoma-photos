@@ -8,11 +8,19 @@ module Helpers
 		# Skip creation of thumbnail if it exists
 		return if pn.exist?
 		img = Magick::Image::read(filename).first
-		thumbnail = img.scale(0.09)
-	  # Save thumbnail to file
-		img.write thumbnail_filename
+		thumbnail = img.resize_to_fill(200,150)
+		begin
+  	  # Save thumbnail to file
+  		thumbnail.write thumbnail_filename
+		rescue => e
+			dir = thumbnail_filename.split("/")
+			dir.pop
+			FileUtils.mkdir_p(dir.join("/"))
+			retry
+		end
 		# Destroy the image to free up memory
 		img.destroy!
+		thumbnail.destroy!
 	end
 
 	# Scale photos to sane size
@@ -25,8 +33,26 @@ module Helpers
 		return if pn.exist?
 		img = Magick::Image::read(filename).first
 		scaled = img.scale(0.4)
-		img.write scaled_filename
+		begin
+  		scaled.write scaled_filename
+		rescue => e
+			dir = scaled_filename.split("/")
+			dir.pop
+			FileUtils.mkdir_p(dir.join("/"))
+			retry
+		end
 		# Destroy the image to free up memory
 		img.destroy!
+		scaled.destroy!
+	end
+
+	def self.progress_bar(title, total_size)
+	  ProgressBar.create(
+			:title => title,
+			:starting_at => 0,
+			:total => total_size,
+			:format => '%a %bᗧ%i %c of %C (%p%%) %t',
+			:progress_mark  => ' ',
+			:remainder_mark => '･')
 	end
 end

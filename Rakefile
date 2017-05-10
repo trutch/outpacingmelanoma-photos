@@ -1,5 +1,7 @@
 require 'fileutils'
 require 'bundler'
+require 'yaml'
+
 Bundler.require(:default)
 
 Dotenv.load
@@ -13,13 +15,7 @@ task :scale do
 	photo_dir = "#{ENV['LOCAL_BUCKET']}/full"
 	# FNM_CASEFOLD is to allow for case-insensitive matching
 	photos = Dir.glob("#{photo_dir}/**/*.jpg", File::FNM_CASEFOLD)
-	progressbar = ProgressBar.create(
-		:title => "Scaling Photos",
-		:starting_at => 0,
-		:total => photos.length,
-		:format => '%a %bᗧ%i %c of %C (%p%%) %t',
-		:progress_mark  => ' ',
-		:remainder_mark => '･')
+	progressbar = Helpers.progress_bar("Scaling Photos", photos.length)
 	photos.each do |photo|
 		progressbar.log "Current: #{photo}"
 		# Make Thumbnail out of full size photo
@@ -30,9 +26,23 @@ task :scale do
 	end
 end
 
-desc "Create JSON Manifest"
-task :marshall do
-
+desc "Create YAML Manifest"
+task :manifest do
+	photo_dir = "#{ENV['LOCAL_BUCKET']}/full"
+	photos = Dir.glob("#{photo_dir}/**/*.jpg", File::FNM_CASEFOLD)
+	# Initialize hash object to collect photos
+	photo_collection = Array.new
+	photos.each do |photo|
+		# Split up filename by slashes
+		file_elements = photo.split("/")
+		photo_collection << {
+			filename: file_elements[-1],
+			category: file_elements[-2]
+		}
+	end
+	# Open YAML File and Write Object to it
+	File.open('./2017_photos.yml', 'w') { |f|
+		f.write photo_collection.to_yaml
+	}
 end
-
 
