@@ -24,7 +24,7 @@ if [ -z $(grep -m1 -Eo "[0-9]+\.[0-9]+\.[0-9]+" $version_file) ]; then
 fi
 
 # https://github.com/treeder/dockers/tree/master/bump
-docker run --rm -it -v $PWD:/app -w /app treeder/bump --filename package.json patch
+docker run --rm -it -v $PWD:/app -w /app treeder/bump --filename VERSION patch
 version=$(grep -m1 -Eo "[0-9]+\.[0-9]+\.[0-9]+" $version_file)
 echo "Version: $version"
 
