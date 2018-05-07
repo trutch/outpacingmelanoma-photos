@@ -2,4 +2,4 @@ set -ex
 
 PROJECT='outpacingmelanoma/photos'
 
-docker build -t $PROJECT:latest .
+sudo docker build -t $PROJECT:latest .
