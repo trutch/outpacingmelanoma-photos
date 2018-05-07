@@ -11,7 +11,8 @@ Dir.glob('lib/tasks/*.rake').each { |r| import r }
 
 ####### SCALE PHOTOS ########
 desc "Scale down Photos"
-task :scale_down do
+task :scale_down, [:year]  do |t, args|
+	binding.pry
 	# Only want directory with the full size images
 	photo_dir = "./2013/full"
 	# FNM_CASEFOLD is to allow for case-insensitive matching
