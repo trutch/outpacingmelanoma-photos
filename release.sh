@@ -12,7 +12,7 @@ else
   exit 1
 fi
 
-image="fnproject/ui"
+image="outpacingmelanoma/photos"
 
 git pull
 
@@ -21,6 +21,7 @@ if [ -z $(grep -m1 -Eo "[0-9]+\.[0-9]+\.[0-9]+" $version_file) ]; then
   echo "did not find semantic version in $version_file"
   exit 1
 fi
+
 # https://github.com/treeder/dockers/tree/master/bump
 docker run --rm -it -v $PWD:/app -w /app treeder/bump --filename package.json patch
 version=$(grep -m1 -Eo "[0-9]+\.[0-9]+\.[0-9]+" $version_file)
