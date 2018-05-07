@@ -16,7 +16,8 @@ image="outpacingmelanoma/photos"
 
 git pull
 
-version_file="package.json"
+version_file="VERSION"
+
 if [ -z $(grep -m1 -Eo "[0-9]+\.[0-9]+\.[0-9]+" $version_file) ]; then
   echo "did not find semantic version in $version_file"
   exit 1
