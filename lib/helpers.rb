@@ -1,14 +1,14 @@
 module Helpers
 	# Make thumbnail photos
 	def self.make_thumbnail(filename)
-		directory = filename.split("/").first
+		directory = filename.split('/')[0..1].join('/')
 		thumbnail_filename = filename.gsub /#{directory}\/full/, "#{directory}/thumbnails"
 		# Set up pathname based on thumnail filename
 		pn = Pathname.new(thumbnail_filename)
 		# Skip creation of thumbnail if it exists
 		return if pn.exist?
 		img = Magick::Image::read(filename).first
-		thumbnail = img.resize_to_fill(200,150)
+		thumbnail = img.resize_to_fill(200,200)
 		begin
   	  # Save thumbnail to file
   		thumbnail.write thumbnail_filename
@@ -25,7 +25,7 @@ module Helpers
 
 	# Scale photos to sane size
 	def self.make_scale(filename)
-		directory = filename.split("/").first
+		directory = filename.split('/')[0..1].join('/')
 		scaled_filename = filename.gsub /#{directory}\/full/, "#{directory}/scaled"
 		# Set up pathname based on scaled filename
 		pn = Pathname.new(scaled_filename)
@@ -33,6 +33,7 @@ module Helpers
 		return if pn.exist?
 		img = Magick::Image::read(filename).first
 		scaled = img.scale(0.4)
+		# Scale image to 40% of original size
 		begin
   		scaled.write scaled_filename
 		rescue => e
