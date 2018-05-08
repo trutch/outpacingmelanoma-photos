@@ -17,7 +17,6 @@ task :scale_down, [:year]  do |t, args|
 	# FNM_CASEFOLD is to allow for case-insensitive matching
 	photos = Dir.glob("#{photo_dir}/**/*.jpg", File::FNM_CASEFOLD)
 	progressbar = Helpers.progress_bar("Scaling Photos", photos.length)
-	binding.pry
 	photos.each do |photo|
 		progressbar.log "Current: #{photo}"
 		# Make Thumbnail out of full size photo
