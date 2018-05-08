@@ -1,6 +1,6 @@
 #!/bin/bash 
 
-docker rm -f ooutpacing-photos-2018 || true
+docker rm -f outpacing-photos-2018 || true
 
 docker run -it \
 	-v `pwd`:/srv \
