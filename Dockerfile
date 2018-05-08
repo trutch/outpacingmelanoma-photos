@@ -1,6 +1,6 @@
 FROM ruby:2.4.3-stretch
 
-#RUN apt install imagemagick-dev
+RUN apt install vim
 
 # Copy all files to app dir
 COPY . /app
