@@ -7,4 +7,4 @@ docker run -it \
 	-v /home/trutch/Dropbox/Design/2018-outpacing-photos:/photos \
 	--name='outpacing-photos-2018' \
 	--net=host \
-        outpacingmelanoma/photos:0.0.16
+        outpacingmelanoma/photos:latest

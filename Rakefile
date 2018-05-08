@@ -29,6 +29,22 @@ task :scale_down, [:year]  do |t, args|
 	end
 end
 
+desc "Fix Orientation"
+task :fix_orientation do
+	# Only want directory with the full size images
+	photo_dir = "/photos/thumbnails"
+	# FNM_CASEFOLD is to allow for case-insensitive matching
+	photos = Dir.glob("#{photo_dir}/**/*.jpg", File::FNM_CASEFOLD)
+	photos.each do |photo|
+		progressbar.log "Current: #{photo}"
+		# Fix the orientaiton of the image
+		Helpers.fix_orientation(photo)
+	  progressbar.increment
+		resident_memory=`ps -o rss= -p #{Process.pid}`.to_i
+		GC.start if resident_memory > 1284840
+	end
+end
+
 
 
 
