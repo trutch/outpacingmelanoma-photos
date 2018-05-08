@@ -2,7 +2,7 @@ FROM ruby:2.4.3-stretch
 
 RUN apt update
 
-RUN apt install vim
+RUN apt install -y vim
 
 # Copy all files to app dir
 COPY . /app
