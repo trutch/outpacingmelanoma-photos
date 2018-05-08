@@ -38,5 +38,3 @@ git push
 git push origin $tag
 
 docker tag $image:latest $image:$version
-docker push $image:$version
-docker push $image:latest
