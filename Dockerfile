@@ -12,4 +12,4 @@ WORKDIR /app
 RUN bundle install
 
 # Set a nicle little entrypoint
-ENTRYPOINT ['/usr/local/bundle/bin/bundle', 'exec', 'rake']
+CMD ['/bin/bash']
