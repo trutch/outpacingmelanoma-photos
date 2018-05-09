@@ -32,7 +32,7 @@ end
 desc "Fix Orientation"
 task :fix_orientation do
 	# Only want directory with the full size images
-	photo_dir = "/photos/thumbnails"
+	photo_dir = "/photos/scaled"
 	# FNM_CASEFOLD is to allow for case-insensitive matching
 	photos = Dir.glob("#{photo_dir}/**/*.jpg", File::FNM_CASEFOLD)
 	progressbar = Helpers.progress_bar("Scaling Photos", photos.length)
