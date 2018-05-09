@@ -14,6 +14,6 @@ WORKDIR /app
 RUN bundle install
 
 # Set a nicle little entrypoint
-ENTRYPOINT ['bundle', 'exec', 'rake']
+ENTRYPOINT ['/bin/bash -l -c', 'bundle', 'exec', 'rake']
 
 #CMD ["/bin/bash"]
