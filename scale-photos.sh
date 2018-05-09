@@ -7,4 +7,5 @@ docker run -it \
 	-v `pwd`:/srv \
 	-v $SOURCE_VOLUME:/photos \
 	--name='outpacing-photos-2018' \
-        outpacingmelanoma/photos:latest
+        outpacingmelanoma/photos:latest \
+        rake -T

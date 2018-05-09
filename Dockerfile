@@ -2,7 +2,7 @@ FROM ruby:2.4.3-stretch
 
 RUN apt update
 
-RUN apt install -y vim
+RUN apt install -y vim bash
 
 # Copy all files to app dir
 COPY . /app
@@ -14,6 +14,4 @@ WORKDIR /app
 RUN bundle install
 
 # Set a nicle little entrypoint
-ENTRYPOINT ['/bin/bash -l -c', 'bundle', 'exec', 'rake']
-
-#CMD ["/bin/bash"]
+ENTRYPOINT /bin/bash

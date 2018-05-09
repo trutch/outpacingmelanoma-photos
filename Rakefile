@@ -35,6 +35,7 @@ task :fix_orientation do
 	photo_dir = "/photos/thumbnails"
 	# FNM_CASEFOLD is to allow for case-insensitive matching
 	photos = Dir.glob("#{photo_dir}/**/*.jpg", File::FNM_CASEFOLD)
+	progressbar = Helpers.progress_bar("Scaling Photos", photos.length)
 	photos.each do |photo|
 		progressbar.log "Current: #{photo}"
 		# Fix the orientaiton of the image
