@@ -5,15 +5,16 @@ require 'yaml'
 Bundler.require(:default)
 
 Dotenv.load
+APPLICATION_ROOT = File.expand_path(__dir__)
 
-Dir.glob(['lib/*.rb']).each { |r| load r}
-Dir.glob('lib/tasks/*.rake').each { |r| import r }  
+Dir.glob("#{APPLICATION_ROOT}/lib/*.rb").each { |r| load r}
+Dir.glob("#{APPLICATION_ROOT}/lib/tasks/*.rake").each { |r| import r }  
 
 ####### SCALE PHOTOS ########
 desc "Scale down Photos"
 task :scale_down, [:year]  do |t, args|
 	# Only want directory with the full size images
-	photo_dir = "/photos"
+	photo_dir = "/home/trutch/Projects/outpacingmelanoma-photos/data/2020_virtual_photos"
 	# FNM_CASEFOLD is to allow for case-insensitive matching
 	photos = Dir.glob("#{photo_dir}/**/*.jpg", File::FNM_CASEFOLD)
 	progressbar = Helpers.progress_bar("Scaling Photos", photos.length)

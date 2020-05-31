@@ -13,7 +13,7 @@ module Helpers
 
 	# Make thumbnail photos
 	def self.make_thumbnail(filename)
-		directory = filename.split('/')[0..2].join('/')
+		directory = filename.split('/')[0..6].join('/')
 		thumbnail_filename = filename.gsub /#{directory}\/full/, "#{directory}/thumbnails"
 		# Set up pathname based on thumnail filename
 		pn = Pathname.new(thumbnail_filename)
@@ -37,7 +37,7 @@ module Helpers
 
 	# Scale photos to sane size
 	def self.make_scale(filename)
-		directory = filename.split('/')[0..2].join('/')
+		directory = filename.split('/')[0..6].join('/')
 		scaled_filename = filename.gsub /#{directory}\/full/, "#{directory}/scaled"
 		# Set up pathname based on scaled filename
 		pn = Pathname.new(scaled_filename)
