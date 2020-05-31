@@ -14,9 +14,9 @@ Dir.glob("#{APPLICATION_ROOT}/lib/tasks/*.rake").each { |r| import r }
 desc "Scale down Photos"
 task :scale_down, [:year]  do |t, args|
 	# Only want directory with the full size images
-	photo_dir = "/home/trutch/Projects/outpacingmelanoma-photos/data/2020_virtual_photos"
+	photo_dir = "/home/trutch/Projects/outpacingmelanoma-photos/data/2020/full"
 	# FNM_CASEFOLD is to allow for case-insensitive matching
-	photos = Dir.glob("#{photo_dir}/**/*.jpg", File::FNM_CASEFOLD)
+	photos = Dir.glob("#{photo_dir}/**/*.jp*", File::FNM_CASEFOLD)
 	progressbar = Helpers.progress_bar("Scaling Photos", photos.length)
 	photos.each do |photo|
 		progressbar.log "Current: #{photo}"
@@ -100,22 +100,27 @@ end
 
 desc "Create YAML Manifest"
 task :manifest do
-	#photo_dir = "#{ENV['LOCAL_BUCKET']}/full"
-	photo_dir = "./2013/full"
-	photos = Dir.glob("#{photo_dir}/**/*.jpg", File::FNM_CASEFOLD)
+  target_bucket = 'outpacingmelanoma'
+  s3 = Aws::S3::Resource.new(region: 'us-east-1')
+  bucket = s3.bucket(target_bucket)
+#	photo_dir = "./data/2020/full"
+	photos = bucket.objects.select { |obj| obj.key =~ /^photos\/2020\/full/ }
+#	photos = Dir.glob("#{photo_dir}/**/*.jp*", File::FNM_CASEFOLD)
 	# Initialize hash object to collect photos
 	photo_collection = Array.new
 	photos.each do |photo|
 		# Split up filename by slashes
-		file_elements = photo.split("/")
+		file_elements = photo.key.split("/")
 		photo_collection << {
-			filename: file_elements[-1],
-			category: file_elements[-2],
-			display_category: file_elements[-2].split('_').map(&:capitalize).join(' ')
+			url: { full: photo.public_url,
+					scaled: photo.public_url.gsub(/full/, "scaled"),
+					thumbnail: photo.public_url.gsub(/full/, "thumbnails"),
+		  },
+			category: URI.decode(file_elements[-2])
 		}
 	end
 	# Open YAML File and Write Object to it
-	File.open('./2013_photos.yml', 'w') { |f|
+	File.open('./2020_photos.yml', 'w') { |f|
 		f.write photo_collection.to_yaml
 	}
 end

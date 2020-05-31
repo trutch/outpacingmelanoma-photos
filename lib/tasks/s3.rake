@@ -4,6 +4,7 @@ namespace :s3 do
   config = {region: ENV['AWS_REGION'], key: ENV['AWS_ACCESS_KEY_ID'], secret: ENV['AWS_SECRET_ACCESS_KEY'], bucket: ENV['BUCKET'] }
   Aws.config.update({region: config[:region], credentials: Aws::Credentials.new(config[:key], config[:secret])})
 
+	desc "Sync Remote with Local"
 	task :sync_remote_bucket do
 		target_folder = ENV['LOCAL_BUCKET']
     bucket = Aws::S3::Resource.new.bucket(config[:bucket])
@@ -27,25 +28,31 @@ namespace :s3 do
 	end
 
 	# Sync Local Folder to Remote Bucket
+	desc "Sync Local Folder to Remote"
 	task :sync_local_bucket do
-		target_bucket = 'outpacingmelanoma_photos'
+		target_bucket = 'outpacingmelanoma'
 		s3 = Aws::S3::Resource.new(region: 'us-east-1')
 		bucket = s3.bucket(target_bucket)
-  	photos = Dir.glob("#{ENV['LOCAL_BUCKET']}/thumbnails/**/*.jpg", File::FNM_CASEFOLD)
-    # Create progress bar object 
-		progress = Helpers.progress_bar("Sync to S3 Bucket", photos.length)
-		photos.each do |photo|
-		  progress.log "Current: #{photo}"
-  		# Split up filename by slashes
-  		file_elements = photo.split("/")
-			# Set key name
-			key = file_elements[-4..-1].join("/")
-			# Create object variable
-			obj = bucket.object(key)
-			# Upload file 
-			obj.upload_file(photo)
-		  progress.increment
-		end
+		dirs = ["scaled","thumbnails"]
+		dirs.each do |dir|
+    	photos = Dir.glob("#{ENV['LOCAL_BUCKET']}/#{dir}/**/*.jp*", File::FNM_CASEFOLD)
+      # Create progress bar object 
+	  	progress = Helpers.progress_bar("Sync to S3 Bucket", photos.length)
+	  	photos.each do |photo|
+	  	  progress.log "Current: #{photo}"
+    		# Split up filename by slashes
+    		file_elements = photo.split("/")
+	  		# Set key name
+	  		key = file_elements[-4..-1].join("/")
+	  		# Prepend array with photos dir
+	  		key = "photos/#{key}"
+	  		# Create object variable
+	  		obj = bucket.object(key)
+	  		# Upload file 
+	  		obj.upload_file(photo)
+	  	  progress.increment
+	  	end
+ 	end
 	end
 end
 
