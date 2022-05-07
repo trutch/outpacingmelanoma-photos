@@ -8,8 +8,22 @@ module Helpers
 		img = Magick::Image::read(filename).first
 		oriented_image = img.auto_orient!
 		img.destroy!
-		oriented_image.destroy!
+		begin
+ 		  oriented_image.destroy!
+			puts "Oriented #{filename}"
+		rescue => e
+		end
 	end
+
+	# Convert image
+	def self.convert_image(filename)
+		# Create new jpg filename
+		new_filename = filename.gsub(/\.png/, '.jpg')
+		img = Magick::Image::read(filename).first
+    img.format = 'JPEG'
+		img.write(new_filename) { self.quality = 100 }
+		File.delete(filename)
+  end
 
 	# Make thumbnail photos
 	def self.make_thumbnail(filename)

@@ -33,9 +33,9 @@ namespace :s3 do
 		target_bucket = 'outpacingmelanoma'
 		s3 = Aws::S3::Resource.new(region: 'us-east-1')
 		bucket = s3.bucket(target_bucket)
-		dirs = ["scaled","thumbnails"]
+		dirs = ["full","scaled","thumbnails"]
 		dirs.each do |dir|
-    	photos = Dir.glob("#{ENV['LOCAL_BUCKET']}/#{dir}/**/*.jp*", File::FNM_CASEFOLD)
+    	photos = Dir.glob("#{ENV['LOCAL_BUCKET']}/#{dir}/Community Faces KC/*.jp*", File::FNM_CASEFOLD)
       # Create progress bar object 
 	  	progress = Helpers.progress_bar("Sync to S3 Bucket", photos.length)
 	  	photos.each do |photo|

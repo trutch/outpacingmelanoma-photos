@@ -1,6 +1,7 @@
 require 'fileutils'
 require 'bundler'
 require 'yaml'
+require 'pry'
 
 Bundler.require(:default)
 
@@ -13,10 +14,16 @@ Dir.glob("#{APPLICATION_ROOT}/lib/tasks/*.rake").each { |r| import r }
 ####### SCALE PHOTOS ########
 desc "Scale down Photos"
 task :scale_down, [:year]  do |t, args|
+	# Quit if year isn't supplied
+  if args[:year].nil?
+		puts "Need to supply the year as argument"
+		exit 1
+  end
 	# Only want directory with the full size images
-	photo_dir = "/home/trutch/Projects/outpacingmelanoma-photos/data/2020/full"
+	photo_dir = "/home/trutch/Projects/outpacingmelanoma-photos/data/#{args[:year]}/full"
+	binding.pry
 	# FNM_CASEFOLD is to allow for case-insensitive matching
-	photos = Dir.glob("#{photo_dir}/**/*.jp*", File::FNM_CASEFOLD)
+	photos = Dir.glob("#{photo_dir}/Community Faces KC/*.jp*", File::FNM_CASEFOLD)
 	progressbar = Helpers.progress_bar("Scaling Photos", photos.length)
 	photos.each do |photo|
 		progressbar.log "Current: #{photo}"
@@ -30,12 +37,31 @@ task :scale_down, [:year]  do |t, args|
 	end
 end
 
+####### CONVERT PHOTOS to jpg ########
+desc "Convert Photos"
+task :convert, [:year]  do |t, args|
+	# Only want directory with the full size images
+	photo_dir = "/home/trutch/Dropbox/Design/outpacingmelanoma/2020/2020 Virtual photos"
+	# FNM_CASEFOLD is to allow for case-insensitive matching
+	photos = Dir.glob("#{photo_dir}/**/*.png", File::FNM_CASEFOLD)
+	progressbar = Helpers.progress_bar("Converting Photos", photos.length)
+	photos.each do |photo|
+		progressbar.log "Current: #{photo}"
+		# Make Thumbnail out of full size photo
+		Helpers.convert_image(photo)
+	  progressbar.increment
+		resident_memory=`ps -o rss= -p #{Process.pid}`.to_i
+		GC.start if resident_memory > 1284840
+	end
+end
+
 desc "Fix Orientation"
 task :fix_orientation do
 	# Only want directory with the full size images
-	photo_dir = "/photos/thumbnails"
+	photo_dir = "/home/trutch/Projects/outpacingmelanoma-photos/data/2020/thumbnails"
 	# FNM_CASEFOLD is to allow for case-insensitive matching
 	photos = Dir.glob("#{photo_dir}/**/*.jpg", File::FNM_CASEFOLD)
+	progressbar = Helpers.progress_bar("Converting Photos", photos.length)
 	photos.each do |photo|
 		progressbar.log "Current: #{photo}"
 		# Fix the orientaiton of the image
@@ -103,8 +129,8 @@ task :manifest do
   target_bucket = 'outpacingmelanoma'
   s3 = Aws::S3::Resource.new(region: 'us-east-1')
   bucket = s3.bucket(target_bucket)
-#	photo_dir = "./data/2020/full"
-	photos = bucket.objects.select { |obj| obj.key =~ /^photos\/2020\/full/ }
+#	photo_dir = "./data/2021/full"
+	photos = bucket.objects.select { |obj| obj.key =~ /^photos\/2021\/full/ }
 #	photos = Dir.glob("#{photo_dir}/**/*.jp*", File::FNM_CASEFOLD)
 	# Initialize hash object to collect photos
 	photo_collection = Array.new
@@ -120,7 +146,7 @@ task :manifest do
 		}
 	end
 	# Open YAML File and Write Object to it
-	File.open('./2020_photos.yml', 'w') { |f|
+	File.open('./2021_photos.yml', 'w') { |f|
 		f.write photo_collection.to_yaml
 	}
 end
