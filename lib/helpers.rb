@@ -1,12 +1,17 @@
 module Helpers
-	# Make thumbnail photos
+	# Fix orientation on images
 	def self.fix_orientation(filename)
 		directory = filename.split('/')[0..2].join('/')
-		# Set up pathname based on thumnail filename
+		# Set up pathname based on filename
 		pn = Pathname.new(filename)
 		# Skip creation of thumbnail if it exists
 		img = Magick::Image::read(filename).first
-		oriented_image = img.auto_orient!
+		# Only rotate the ones that need it
+		if img.orientation.to_i != 1
+			oriented_image = img.auto_orient
+			oriented_image.write filename
+		  oriented_image.destroy!
+	  end
 		img.destroy!
 		begin
  		  oriented_image.destroy!

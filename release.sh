@@ -32,8 +32,8 @@ echo "Version: $version"
 
 tag="$version"
 git add -u
-git commit -m "fn UI: $version [skip ci]"
-git tag -f -a $tag -m "fn UI: $version"
+git commit -m "Quick Release: $version [skip ci]"
+git tag -f -a $tag -m "$version"
 git push
 git push origin $tag
 
